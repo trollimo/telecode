@@ -1,0 +1,30 @@
+# IDE
+.idea/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+.omo
+.pytest_cache
+
+# Secrets — never commit
+.env
+config.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Docker
+docker-data/
+
+# Gradle cache (external volume)
+.gradle/

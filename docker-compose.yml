@@ -1,0 +1,73 @@
+# =============================================================================
+# Docker Compose — Telegram Bot + OpenCode
+# =============================================================================
+
+services:
+  opencode:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: opencode-telegram:latest
+    container_name: opencode-server
+    ports:
+      - "4096:4096"
+    volumes:
+      # Working directory mounted from host
+      - d:/git/opc-agents-pipeline:/workspace
+      # Global agent instructions for OpenCode
+      - ./mount/AGENTS.md:/opencode/AGENTS.md
+      # Skills
+      - ./mount/SKILLS:/opencode/mount/SKILLS
+      # Gradle cache (persist across restarts)
+      - gradle-cache:/root/.gradle
+      # Override opencode config (optional — host file takes precedence)
+      - ./opencode.json:/root/.opencode.json
+    environment:
+      - OPENCODE_AGENTS_DIR=/opencode
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - CONTEXT7_API_KEY=${CONTEXT7_API_KEY:-}
+      - OPENCODE_ZEN_API_KEY=${OPENCODE_ZEN_API_KEY:-}
+      - OPENCODE_SERVER_PASSWORD=${OPENCODE_SERVER_PASSWORD:-}
+    restart: unless-stopped
+    networks:
+      - opencode-net
+    # Give opencode enough time to start (loads models, MCP, etc.)
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://127.0.0.1:4096/global/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile.bot
+    image: tg-bot:latest
+    container_name: telegram-bot
+    depends_on:
+      opencode:
+        condition: service_healthy
+    volumes:
+      # Bot code (for development hot-reload)
+      - ./bot:/app/bot
+      # Host config file — the user must create ~/.rem-opencode/config.json
+      - type: bind
+        source: ~/.rem-opencode/config.json
+        target: /app/config.json
+        read_only: true
+    environment:
+      - OVERRIDE_CONFIG=/app/config.json
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    networks:
+      - opencode-net
+
+volumes:
+  gradle-cache:
+
+networks:
+  opencode-net:
+    driver: bridge
