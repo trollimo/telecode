@@ -3,7 +3,8 @@
 # Works on Linux and Windows (Git Bash / mingw).
 set -euo pipefail
 
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."
+COMPOSE="docker compose -f docker/compose.yml --project-directory ."
 
 echo "=== Starting Telegram → OpenCode stack ==="
 
@@ -24,21 +25,18 @@ EOF
     exit 1
 fi
 
-# Create external volumes if needed
-mkdir -p docker-data/gradle-cache
-
 # Build images only if they don't exist yet
 if ! docker image inspect opencode-telegram:latest > /dev/null 2>&1; then
     echo "[BUILD] opencode-telegram:latest not found, building..."
-    docker compose build opencode
+    $COMPOSE build opencode
 fi
 if ! docker image inspect tg-bot:latest > /dev/null 2>&1; then
     echo "[BUILD] tg-bot:latest not found, building..."
-    docker compose build bot
+    $COMPOSE build bot
 fi
 
-docker compose up -d
+$COMPOSE up -d
 
 echo "=== Stack started ==="
-echo "  Bot logs: docker compose logs -f bot"
-echo "  Stop:     ./stop.sh"
+echo "  Bot logs: $COMPOSE logs -f bot"
+echo "  Stop:     scripts/stop.sh"

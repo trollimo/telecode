@@ -9,12 +9,13 @@ __pycache__/
 dist/
 build/
 
-.omo
-.pytest_cache
+.omo/
+.pytest_cache/
 
 # Secrets — never commit
 .env
 config.json
+**/config.json
 
 # OS
 .DS_Store
@@ -23,8 +24,8 @@ Thumbs.db
 # Logs
 *.log
 
-# Docker
-docker-data/
+# Docker runtime data
+docker/data/
 
 # Gradle cache (external volume)
 .gradle/
