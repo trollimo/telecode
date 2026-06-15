@@ -6,7 +6,7 @@ services:
   opencode:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: docker/opencode/Dockerfile
     image: opencode-telegram:latest
     container_name: opencode-server
     ports:
@@ -15,13 +15,15 @@ services:
       # Working directory mounted from host
       - d:/git/opc-agents-pipeline:/workspace
       # Global agent instructions for OpenCode
-      - ./mount/AGENTS.md:/opencode/AGENTS.md
+      - ./docker/opencode/AGENTS.md:/opencode/AGENTS.md
       # Skills
-      - ./mount/SKILLS:/opencode/mount/SKILLS
+      - ./docker/opencode/SKILLS:/opencode/mount/SKILLS
       # Gradle cache (persist across restarts)
       - gradle-cache:/root/.gradle
-      # Override opencode config (optional — host file takes precedence)
-      - ./opencode.json:/root/.opencode.json
+      # Override opencode config — mounted to global config path
+      - ./docker/opencode/opencode.json:/root/.config/opencode/opencode.json
+      # For run external conteiners
+      - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - OPENCODE_AGENTS_DIR=/opencode
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
@@ -44,7 +46,7 @@ services:
   bot:
     build:
       context: .
-      dockerfile: Dockerfile.bot
+      dockerfile: docker/bot/Dockerfile.bot
     image: tg-bot:latest
     container_name: telegram-bot
     depends_on:
