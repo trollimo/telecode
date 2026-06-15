@@ -49,7 +49,7 @@ if [ ! -f "$OC_CONFIG" ]; then
       }
     }
   },
-  "agents": {
+  "agent": {
     "coder": { "model": "opencode/deepseek-v4-flash-free" },
     "task":  { "model": "opencode/deepseek-v4-flash-free" },
     "title": { "model": "opencode/deepseek-v4-flash-free" }

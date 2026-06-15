@@ -13,7 +13,7 @@ services:
       - "4096:4096"
     volumes:
       # Working directory mounted from host
-      - d:/git/opc-agents-pipeline:/workspace
+      - D:/git2/remote-opencode-workplace:/workspace
       # Global agent instructions for OpenCode
       - ./docker/opencode/AGENTS.md:/opencode/AGENTS.md
       # Skills
