@@ -55,7 +55,7 @@ RUN npm install -g opencode-ai@latest --omit=optional \
     && opencode --version
 
 # ---------- Copy default config ----------
-COPY opencode.json /root/.opencode.json
+COPY docker/opencode/opencode.json /root/.config/opencode/opencode.json
 
 # ---------- Prepare mount points ----------
 RUN mkdir -p /opencode
