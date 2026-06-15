@@ -10,10 +10,12 @@ echo "=== Starting Telegram → OpenCode stack ==="
 
 # Ensure config exists
 CONFIG_DIR="${HOME}/.rem-opencode"
+mkdir -p "$CONFIG_DIR"
+
+# Telegram bot config
 CONFIG_FILE="${CONFIG_DIR}/config.json"
 if [ ! -f "$CONFIG_FILE" ]; then
     echo "[INFO] Config not found. Creating template at ${CONFIG_FILE}..."
-    mkdir -p "$CONFIG_DIR"
     cat > "$CONFIG_FILE" <<- EOF
 {
   "telegram_token": "YOUR_BOT_TOKEN_HERE",
@@ -23,6 +25,38 @@ if [ ! -f "$CONFIG_FILE" ]; then
 EOF
     echo "[WARN] Edit ${CONFIG_FILE} with your real token and user ID, then re-run."
     exit 1
+fi
+
+# OpenCode model config
+OC_CONFIG="${CONFIG_DIR}/opencode.json"
+if [ ! -f "$OC_CONFIG" ]; then
+    echo "[INFO] Creating default opencode.json at ${OC_CONFIG}..."
+    cat > "$OC_CONFIG" <<- EOF
+{
+  "\$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "opencode": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "OpenCode Zen",
+      "options": {
+        "baseURL": "https://opencode.ai/zen/v1/chat/completions",
+        "apiKey": "{env:OPENCODE_ZEN_API_KEY}"
+      },
+      "models": {
+        "deepseek-v4-flash-free": {
+          "name": "DeepSeek V4 Flash Free"
+        }
+      }
+    }
+  },
+  "agents": {
+    "coder": { "model": "opencode/deepseek-v4-flash-free" },
+    "task":  { "model": "opencode/deepseek-v4-flash-free" },
+    "title": { "model": "opencode/deepseek-v4-flash-free" }
+  }
+}
+EOF
+    echo "[INFO] Edit ${OC_CONFIG} to change model providers if needed."
 fi
 
 # Build images only if they don't exist yet

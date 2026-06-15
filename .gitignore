@@ -12,10 +12,12 @@ build/
 .omo/
 .pytest_cache/
 
-# Secrets — never commit
+# Secrets & local config — never commit
 .env
 config.json
 **/config.json
+opencode.json
+**/opencode.json
 
 # OS
 .DS_Store

@@ -20,8 +20,8 @@ services:
       - ./docker/opencode/SKILLS:/opencode/mount/SKILLS
       # Gradle cache (persist across restarts)
       - gradle-cache:/root/.gradle
-      # Override opencode config — mounted to global config path
-      - ./docker/opencode/opencode.json:/root/.config/opencode/opencode.json
+      # OpenCode config — mounted from host config directory
+      - ~/.rem-opencode/opencode.json:/root/.config/opencode/opencode.json
       # For run external conteiners
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
