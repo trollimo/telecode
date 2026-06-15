@@ -111,14 +111,23 @@ volumes:
 | `SKILLS/*/` | Наборы скиллов (Java Senior, Python Tester, …) | `docker/opencode/SKILLS/` |
 | `opencode.json` | Модели провайдеров (DeepSeek, Anthropic, …) | `~/.rem-opencode/opencode.json` |
 
-Пример `~/.rem-opencode/opencode.json`:
+**Минимальный конфиг** — без токенов, использует встроенные бесплатные модели OpenCode из `models.dev` (DeepSeek V4 Flash Free, Big Pickle и др.):
+```json
+{
+  "$schema": "https://opencode.ai/config.json"
+}
+```
+
+**Если хочешь свои модели** (OpenAI, Anthropic, OpenCode Zen с API-ключом):
 ```json
 {
   "$schema": "https://opencode.ai/config.json",
   "provider": {
-    "opencode": {
-      "options": { "baseURL": "https://opencode.ai/zen/v1/chat/completions" },
-      "models": { "deepseek-v4-flash-free": { "name": "DeepSeek V4 Flash Free" } }
+    "anthropic": {
+      "options": { "apiKey": "{env:ANTHROPIC_API_KEY}" }
+    },
+    "openai": {
+      "options": { "apiKey": "{env:OPENAI_API_KEY}" }
     }
   }
 }

@@ -31,29 +31,9 @@ fi
 OC_CONFIG="${CONFIG_DIR}/opencode.json"
 if [ ! -f "$OC_CONFIG" ]; then
     echo "[INFO] Creating default opencode.json at ${OC_CONFIG}..."
-    cat > "$OC_CONFIG" <<- EOF
+    cat > "$OC_CONFIG" <<- 'EOF'
 {
-  "\$schema": "https://opencode.ai/config.json",
-  "provider": {
-    "opencode": {
-      "npm": "@ai-sdk/openai-compatible",
-      "name": "OpenCode Zen",
-      "options": {
-        "baseURL": "https://opencode.ai/zen/v1/chat/completions",
-        "apiKey": "{env:OPENCODE_ZEN_API_KEY}"
-      },
-      "models": {
-        "deepseek-v4-flash-free": {
-          "name": "DeepSeek V4 Flash Free"
-        }
-      }
-    }
-  },
-  "agent": {
-    "coder": { "model": "opencode/deepseek-v4-flash-free" },
-    "task":  { "model": "opencode/deepseek-v4-flash-free" },
-    "title": { "model": "opencode/deepseek-v4-flash-free" }
-  }
+  "$schema": "https://opencode.ai/config.json"
 }
 EOF
     echo "[INFO] Edit ${OC_CONFIG} to change model providers if needed."
