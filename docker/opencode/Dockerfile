@@ -54,9 +54,6 @@ RUN wget -q "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-
 RUN npm install -g opencode-ai@latest --omit=optional \
     && opencode --version
 
-# ---------- Copy default config ----------
-COPY docker/opencode/opencode.json.default /root/.opencode.json
-
 # ---------- Prepare mount points ----------
 RUN mkdir -p /opencode
 
